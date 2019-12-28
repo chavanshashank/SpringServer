@@ -1,6 +1,7 @@
-package com.server.database.token
+package com.server.repository.auth.token
 
-import com.server.database.MongoObject
+import com.server.repository.MongoObject
+import com.server.repository.auth.AuthenticationSerializer
 import org.springframework.security.oauth2.provider.OAuth2Authentication
 
 abstract class MongoBaseToken(var token: String,

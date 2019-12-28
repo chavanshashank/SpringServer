@@ -1,12 +1,11 @@
 package com.server.resources
 
-import com.server.database.client.Client
-import com.server.database.client.ClientRepository
-import com.server.database.token.AccessTokenRepository
-import com.server.database.token.RefreshTokenRepository
-import com.server.database.user.User
-import com.server.database.user.UserRepository
-import org.bson.types.ObjectId
+import com.server.repository.client.Client
+import com.server.repository.client.ClientRepository
+import com.server.repository.auth.token.AccessTokenRepository
+import com.server.repository.auth.token.RefreshTokenRepository
+import com.server.repository.user.User
+import com.server.repository.user.UserRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before

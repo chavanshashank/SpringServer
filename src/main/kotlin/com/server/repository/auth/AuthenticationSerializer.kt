@@ -1,9 +1,12 @@
-package com.server.database.token
+package com.server.repository.auth
 
 import org.apache.commons.codec.binary.Base64
 import org.springframework.security.oauth2.common.util.SerializationUtils
 import org.springframework.security.oauth2.provider.OAuth2Authentication
 
+/**
+ * Serializer for OAuth2Authentication serialization.
+ */
 object AuthenticationSerializer {
     fun serialize(`object`: OAuth2Authentication?): String? {
         return try {

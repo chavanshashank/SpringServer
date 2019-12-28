@@ -1,6 +1,6 @@
-package com.server.database.token.authcode
+package com.server.repository.auth.code
 
-import com.server.database.MongoRepositoryBase
+import com.server.repository.MongoRepositoryBase
 
 interface AuthorizationCodeRepository : MongoRepositoryBase<AuthorizationCodeObject, String> {
     fun findByCode(code: String?): AuthorizationCodeObject?

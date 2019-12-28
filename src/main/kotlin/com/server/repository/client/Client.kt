@@ -1,7 +1,7 @@
-package com.server.database.client
+package com.server.repository.client
 
 import com.server.auth.CustomSimpleGrantedAuthority
-import com.server.database.MongoObject
+import com.server.repository.MongoObject
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.oauth2.provider.ClientDetails
 

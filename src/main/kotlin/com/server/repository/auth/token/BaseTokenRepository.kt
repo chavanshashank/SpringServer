@@ -1,4 +1,4 @@
-package com.server.database.token
+package com.server.repository.auth.token
 
 import com.server.crypto.ServerCrypto
 import org.springframework.beans.factory.annotation.Autowired

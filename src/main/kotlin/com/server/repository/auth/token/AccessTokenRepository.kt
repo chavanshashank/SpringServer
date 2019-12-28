@@ -1,6 +1,6 @@
-package com.server.database.token
+package com.server.repository.auth.token
 
-import com.server.database.MongoRepositoryBase
+import com.server.repository.MongoRepositoryBase
 
 interface AccessTokenRepository : MongoRepositoryBase<MongoAccessToken, String>, CustomAccessTokenRepository
 

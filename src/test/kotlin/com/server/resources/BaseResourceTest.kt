@@ -17,7 +17,7 @@ import org.springframework.web.context.WebApplicationContext
 @RunWith(SpringRunner::class)
 @SpringBootTest
 @MyActiveProfile
-class BaseResourceTest {
+abstract class BaseResourceTest {
 
     @Autowired
     protected lateinit var applicationContext: WebApplicationContext

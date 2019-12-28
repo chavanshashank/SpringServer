@@ -1,11 +1,11 @@
-package com.server.database
+package com.server.repository
 
 import com.server.MySpringBootTest
 import com.server.auth.CustomSimpleGrantedAuthority
-import com.server.database.token.AuthenticationSerializer
-import com.server.database.token.authcode.AuthorizationCodeObject
-import com.server.database.token.authcode.AuthorizationCodeRepository
-import com.server.database.user.User
+import com.server.repository.auth.AuthenticationSerializer
+import com.server.repository.auth.code.AuthorizationCodeObject
+import com.server.repository.auth.code.AuthorizationCodeRepository
+import com.server.repository.user.User
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
 @MySpringBootTest
-class AuthorizationCodeDatabaseTest {
+class AuthorizationCodeRepositoryTest {
 
     @Autowired
     private lateinit var authorizationCodeRepository: AuthorizationCodeRepository

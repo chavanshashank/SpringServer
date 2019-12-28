@@ -1,4 +1,4 @@
-package com.server.database.token
+package com.server.repository.auth.token
 
 import org.springframework.security.oauth2.common.DefaultOAuth2RefreshToken
 import org.springframework.security.oauth2.common.OAuth2AccessToken

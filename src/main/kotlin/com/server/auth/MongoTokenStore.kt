@@ -1,6 +1,10 @@
 package com.server.auth
 
-import com.server.database.token.*
+import com.server.repository.auth.*
+import com.server.repository.auth.token.AccessTokenRepository
+import com.server.repository.auth.token.MongoAccessToken
+import com.server.repository.auth.token.MongoRefreshToken
+import com.server.repository.auth.token.RefreshTokenRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.security.oauth2.common.OAuth2RefreshToken

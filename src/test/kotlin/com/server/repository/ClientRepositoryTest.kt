@@ -1,8 +1,8 @@
-package com.server.database
+package com.server.repository
 
 import com.server.MySpringBootTest
-import com.server.database.client.Client
-import com.server.database.client.ClientRepository
+import com.server.repository.client.Client
+import com.server.repository.client.ClientRepository
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
 @MySpringBootTest
-class ClientDatabaseTest {
+class ClientRepositoryTest {
 
     @Autowired
     private lateinit var clientRepository: ClientRepository

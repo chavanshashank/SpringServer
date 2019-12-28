@@ -1,6 +1,6 @@
 package com.server.auth
 
-import com.server.database.user.UserRepository
+import com.server.repository.user.UserRepository
 import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException

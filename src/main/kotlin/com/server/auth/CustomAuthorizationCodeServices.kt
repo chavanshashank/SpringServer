@@ -1,8 +1,8 @@
 package com.server.auth
 
-import com.server.database.token.AuthenticationSerializer
-import com.server.database.token.authcode.AuthorizationCodeObject
-import com.server.database.token.authcode.AuthorizationCodeRepository
+import com.server.repository.auth.AuthenticationSerializer
+import com.server.repository.auth.code.AuthorizationCodeObject
+import com.server.repository.auth.code.AuthorizationCodeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException
 import org.springframework.security.oauth2.common.util.RandomValueStringGenerator

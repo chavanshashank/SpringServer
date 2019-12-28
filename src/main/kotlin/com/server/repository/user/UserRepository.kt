@@ -1,6 +1,6 @@
-package com.server.database.user
+package com.server.repository.user
 
-import com.server.database.MongoRepositoryBase
+import com.server.repository.MongoRepositoryBase
 
 interface UserRepository: MongoRepositoryBase<User, String> {
     /**

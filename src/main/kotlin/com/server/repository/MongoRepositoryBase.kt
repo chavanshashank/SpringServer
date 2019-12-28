@@ -1,4 +1,4 @@
-package com.server.database
+package com.server.repository
 
 import org.springframework.data.mongodb.repository.MongoRepository
 

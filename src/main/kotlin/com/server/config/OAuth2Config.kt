@@ -5,7 +5,7 @@ import com.server.auth.CustomTokenServices
 import com.server.auth.MongoTokenStore
 import com.server.auth.clientdetails.OAuthClientDetailsService
 import com.server.auth.userdetails.OAuthUserDetailsService
-import com.server.database.user.UserRepository
+import com.server.repository.user.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

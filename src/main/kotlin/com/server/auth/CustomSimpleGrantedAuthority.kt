@@ -15,4 +15,15 @@ class CustomSimpleGrantedAuthority(private val role: String) : GrantedAuthority,
     override fun getAuthority(): String {
         return role
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is GrantedAuthority) {
+            return other.authority == role
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return role.hashCode()
+    }
 }

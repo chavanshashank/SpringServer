@@ -6,8 +6,8 @@ import com.server.auth.clientdetails.OAuthClientDetailsService
 import com.server.auth.userdetails.OAuthUserDetailsService
 import com.server.config.yml.CryptoConfig
 import com.server.crypto.ServerCrypto
-import com.server.database.token.AccessTokenRepositoryImpl
-import com.server.database.token.RefreshTokenRepositoryImpl
+import com.server.repository.auth.token.AccessTokenRepositoryImpl
+import com.server.repository.auth.token.RefreshTokenRepositoryImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
