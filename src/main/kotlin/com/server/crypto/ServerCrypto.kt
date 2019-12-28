@@ -20,7 +20,7 @@ class ServerCrypto(cryptoConfig: CryptoConfig) : Crypto(cryptoConfig.algorithm, 
             null
         } else {
             try {
-                cipher.init(Cipher.ENCRYPT_MODE, aesKey)
+                cipher.init(Cipher.ENCRYPT_MODE, key)
                 return encoder.encodeToString(cipher.doFinal(text.toByteArray()))
             } catch (e: IllegalBlockSizeException) {
                 e.printStackTrace()
@@ -39,7 +39,7 @@ class ServerCrypto(cryptoConfig: CryptoConfig) : Crypto(cryptoConfig.algorithm, 
             null
         } else {
             try {
-                cipher.init(Cipher.DECRYPT_MODE, aesKey)
+                cipher.init(Cipher.DECRYPT_MODE, key)
                 return String(cipher.doFinal(decoder.decode(text)))
             } catch (e: IllegalBlockSizeException) {
                 e.printStackTrace()

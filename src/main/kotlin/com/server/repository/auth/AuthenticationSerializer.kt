@@ -5,7 +5,7 @@ import org.springframework.security.oauth2.common.util.SerializationUtils
 import org.springframework.security.oauth2.provider.OAuth2Authentication
 
 /**
- * Serializer for OAuth2Authentication serialization.
+ * OAuth2Authentication serializer for database storage.
  */
 object AuthenticationSerializer {
     fun serialize(`object`: OAuth2Authentication?): String? {

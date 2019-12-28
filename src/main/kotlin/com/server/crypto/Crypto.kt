@@ -12,21 +12,15 @@ abstract class Crypto(
         /** the encryption key */
         keyString: String?) {
 
-    protected val aesKey: Key
+    protected val key: Key
     protected lateinit var cipher: Cipher
-
-    companion object {
-        /**
-         * Size of the key in bytes (32 = AES-256)
-         */
-        private const val KEY_SIZE = 32
-    }
+        private set
 
     init {
-        if (keyString == null || keyString.length != KEY_SIZE) {
+        if (keyString == null) {
             throw RuntimeException("bad $algorithm key configured")
         }
-        aesKey = SecretKeySpec(keyString.toByteArray(), algorithm)
+        key = SecretKeySpec(keyString.toByteArray(), algorithm)
         try {
             cipher = Cipher.getInstance(algorithm)
         } catch (e: NoSuchAlgorithmException) {
@@ -37,20 +31,18 @@ abstract class Crypto(
     }
 
     /**
-     * Encrypts the provided String using AES encryption and returns the encrypted result.
+     * Encrypts the provided String using the encryption algorithm provided on creation and returns the encrypted result.
      *
-     * @param text the text to encrypt
-     * @return the encrypted String
-     * @throws Exception
+     * @param text The text to encrypt
+     * @return The encrypted String
      */
     abstract fun encrypt(text: String?): String?
 
     /**
-     * Decrypts a previously AES encrypted String and returns the decrypted result.
+     * Decrypts a previously encrypted String and returns the decrypted result.
      *
-     * @param text the text to decrypt
-     * @return the decrypted String
-     * @throws Exception
+     * @param text The text to decrypt
+     * @return The decrypted String
      */
     abstract fun decrypt(text: String?): String?
 }
