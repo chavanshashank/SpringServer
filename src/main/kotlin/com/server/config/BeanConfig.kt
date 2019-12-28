@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices
 
 @Configuration
 class BeanConfig {
@@ -28,7 +27,7 @@ class BeanConfig {
 
     @Bean
     fun getServerCrypto(): ServerCrypto {
-        return ServerCrypto(cryptoConfig.key)
+        return ServerCrypto(cryptoConfig)
     }
 
     @Bean

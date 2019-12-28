@@ -1,0 +1,13 @@
+spring.profiles: production
+crypto:
+  algorithm: AES
+  key: 12345678912345678912345678955556
+spring:
+  data:
+    mongodb:
+      username: productionuser
+      password: productionpassword
+      uri: mongodb://domain.com
+      #replica set uri: mongodb://database1.domain.com,database2.domain.com,database3.domain.com/?ssl=true&replicaSet=replicasetname
+      database: productiondatabase
+      port: 27017

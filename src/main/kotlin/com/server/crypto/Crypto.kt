@@ -7,6 +7,8 @@ import javax.crypto.NoSuchPaddingException
 import javax.crypto.spec.SecretKeySpec
 
 abstract class Crypto(
+        /** the crypto algorithm to use */
+        algorithm: String?,
         /** the encryption key */
         keyString: String?) {
 
@@ -14,7 +16,6 @@ abstract class Crypto(
     protected lateinit var cipher: Cipher
 
     companion object {
-        private const val ALGORITHM = "AES"
         /**
          * Size of the key in bytes (32 = AES-256)
          */
@@ -23,11 +24,11 @@ abstract class Crypto(
 
     init {
         if (keyString == null || keyString.length != KEY_SIZE) {
-            throw RuntimeException("bad $ALGORITHM key configured")
+            throw RuntimeException("bad $algorithm key configured")
         }
-        aesKey = SecretKeySpec(keyString.toByteArray(), ALGORITHM)
+        aesKey = SecretKeySpec(keyString.toByteArray(), algorithm)
         try {
-            cipher = Cipher.getInstance(ALGORITHM)
+            cipher = Cipher.getInstance(algorithm)
         } catch (e: NoSuchAlgorithmException) {
             e.printStackTrace()
         } catch (e: NoSuchPaddingException) {

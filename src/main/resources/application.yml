@@ -1,3 +1,8 @@
+spring:
+  profiles:
+    active: test
+  application:
+    name: Server
 server:
   ssl:
     key-store: classpath:static/keystore.jks
@@ -7,28 +12,4 @@ server:
     key-password: key_password
     enabled: false
   #port: 8443
----
-spring.profiles: test
-crypto:
-  key: 12345678912345678912345678955555
-spring:
-  data:
-    mongodb:
-      username: testuser
-      password: 1234
-      uri: mongodb://localhost
-      port: 27017
-      database: testdatabase
----
-spring.profiles: production
-crypto:
-  key: 12345678912345678912345678955555
-spring:
-  data:
-    mongodb:
-      username: productionuser
-      password: productionpassword
-      uri: mongodb://domain.com
-      #replica set uri: mongodb://database1.domain.com,database2.domain.com,database3.domain.com/?ssl=true&replicaSet=replicasetname
-      database: productiondatabase
-      port: 27017
+

@@ -7,4 +7,5 @@ import org.springframework.stereotype.Component
 @ConfigurationProperties("crypto")
 class CryptoConfig {
     lateinit var key: String
+    lateinit var algorithm: String
 }

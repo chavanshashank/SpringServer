@@ -1,5 +1,6 @@
 package com.server.database
 
+import com.server.MySpringBootTest
 import com.server.auth.CustomSimpleGrantedAuthority
 import com.server.database.token.*
 import com.server.database.user.User
@@ -9,7 +10,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.oauth2.provider.OAuth2Authentication
 import org.springframework.security.oauth2.provider.OAuth2Request
@@ -18,7 +18,7 @@ import java.util.*
 
 
 @RunWith(SpringRunner::class)
-@SpringBootTest
+@MySpringBootTest
 class TokenDatabaseTest {
 
     companion object {

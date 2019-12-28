@@ -1,12 +1,13 @@
 package com.server.crypto
 
+import com.server.config.yml.CryptoConfig
 import java.security.InvalidKeyException
 import java.util.*
 import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
 import javax.crypto.IllegalBlockSizeException
 
-class ServerCrypto(key: String?) : Crypto(key) {
+class ServerCrypto(cryptoConfig: CryptoConfig) : Crypto(cryptoConfig.algorithm, cryptoConfig.key) {
 
     /** URL save encoder  */
     private val encoder = Base64.getUrlEncoder()

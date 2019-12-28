@@ -1,5 +1,6 @@
 package com.server.database
 
+import com.server.MySpringBootTest
 import com.server.auth.CustomSimpleGrantedAuthority
 import com.server.database.token.AuthenticationSerializer
 import com.server.database.token.authcode.AuthorizationCodeObject
@@ -12,7 +13,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.oauth2.provider.OAuth2Authentication
@@ -20,7 +20,7 @@ import org.springframework.security.oauth2.provider.OAuth2Request
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@SpringBootTest
+@MySpringBootTest
 class AuthorizationCodeDatabaseTest {
 
     @Autowired

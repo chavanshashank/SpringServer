@@ -17,9 +17,6 @@ class MongoTokenStore : TokenStore {
     @Autowired
     private lateinit var accessTokenDb: AccessTokenRepository
 
-    /**
-     * Default generator for generating authentication keys.
-     */
     private val authenticationKeyGenerator = DefaultAuthenticationKeyGenerator()
 
     override fun readAuthentication(token: OAuth2AccessToken): OAuth2Authentication? {

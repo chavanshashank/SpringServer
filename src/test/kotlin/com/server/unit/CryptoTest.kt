@@ -1,16 +1,20 @@
 package com.server.unit
 
+import com.server.MySpringBootTest
 import com.server.crypto.ServerCrypto
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.common.util.RandomValueStringGenerator
+import org.springframework.test.context.junit4.SpringRunner
 
+@RunWith(SpringRunner::class)
+@MySpringBootTest
 class CryptoTest {
 
-    companion object {
-        private const val key = "dkIe45uZerhJkdp9dkIe45uZXrhFkdD0"
-        private val crypto = ServerCrypto(key)
-    }
+    @Autowired
+    private lateinit var crypto: ServerCrypto
 
     @Test
     fun testNormalEncryptDecrypt() {
