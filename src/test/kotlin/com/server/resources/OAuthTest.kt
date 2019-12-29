@@ -1,6 +1,5 @@
 package com.server.resources
 
-import com.nimbusds.jose.proc.SecurityContext
 import com.server.repository.auth.token.AccessTokenRepository
 import com.server.repository.auth.token.RefreshTokenRepository
 import com.server.repository.client.Client
@@ -12,7 +11,6 @@ import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.json.JacksonJsonParser
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
