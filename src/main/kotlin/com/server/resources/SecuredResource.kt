@@ -10,6 +10,6 @@ class SecuredResource {
 
     @RequestMapping(method = [RequestMethod.GET])
     fun get(): String {
-        return "Test"
+        return "Secured"
     }
 }

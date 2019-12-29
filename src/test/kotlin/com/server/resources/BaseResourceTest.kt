@@ -20,7 +20,7 @@ import org.springframework.web.context.WebApplicationContext
 abstract class BaseResourceTest {
 
     @Autowired
-    protected lateinit var applicationContext: WebApplicationContext
+    protected lateinit var webApplicationContext: WebApplicationContext
 
     private val mapper = ObjectMapper()
     protected val jsonContent = MediaType.APPLICATION_JSON
@@ -29,7 +29,7 @@ abstract class BaseResourceTest {
 
     @Before
     fun setup() {
-        mvc = MockMvcBuilders.webAppContextSetup(applicationContext).build()
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build()
     }
 
     protected fun toJson(`object`: Any): String? {

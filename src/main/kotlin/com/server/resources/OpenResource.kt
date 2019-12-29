@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(value = ["/api/test"])
-class TestResource {
+@RequestMapping(value = ["/api/open"])
+class OpenResource {
 
     @RequestMapping(method = [RequestMethod.GET])
     fun get(): String {
-        return "Test"
+        return "Open"
     }
 }

@@ -27,5 +27,8 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
                 .and()
                 .formLogin()
                 .permitAll()
+                .and()
+                .logout()
+                .permitAll();
     }
 }

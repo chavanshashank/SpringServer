@@ -13,7 +13,7 @@ class ResourceServerConfig : ResourceServerConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http.requestMatchers().antMatchers("/me").and()
                 .requestMatchers().antMatchers("/api/**").and()
-                .authorizeRequests().antMatchers("/api/test").permitAll().and()
+                .authorizeRequests().antMatchers("/api/open").permitAll().and()
                 .authorizeRequests().anyRequest().authenticated();
     }
 }
