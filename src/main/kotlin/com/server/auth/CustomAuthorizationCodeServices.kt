@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.common.exceptions.InvalidGrantExcepti
 import org.springframework.security.oauth2.common.util.RandomValueStringGenerator
 import org.springframework.security.oauth2.provider.OAuth2Authentication
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices
+import java.time.LocalDateTime
 
 class CustomAuthorizationCodeServices : AuthorizationCodeServices {
 
@@ -24,7 +25,8 @@ class CustomAuthorizationCodeServices : AuthorizationCodeServices {
         return if (serialized == null) {
             null
         } else {
-            val authCodeObject = AuthorizationCodeObject(code, serialized)
+            val expiryDate = LocalDateTime.now().plusMinutes(AuthorizationCodeObject.defaultExpiryMinutes)
+            val authCodeObject = AuthorizationCodeObject(code, serialized, expiryDate)
             authorizationCodeRepository.save(authCodeObject)
             code
         }
@@ -34,11 +36,16 @@ class CustomAuthorizationCodeServices : AuthorizationCodeServices {
     override fun consumeAuthorizationCode(code: String): OAuth2Authentication? {
         val authCodeObject = authorizationCodeRepository.findByCode(code)
         return if (authCodeObject != null) {
-            // "consume" the code by deleting the object
-            authorizationCodeRepository.delete(authCodeObject)
-            authCodeObject.authentication
+
+            if (authCodeObject.isExpired) {
+                throw InvalidGrantException("Authorization code $code is expired")
+            } else {
+                // "consume" the code by deleting the object
+                authorizationCodeRepository.delete(authCodeObject)
+                authCodeObject.authentication
+            }
         } else {
-            throw InvalidGrantException("Authentication object for authorization code not found")
+            throw InvalidGrantException("Authorization code $code not found")
         }
     }
 }

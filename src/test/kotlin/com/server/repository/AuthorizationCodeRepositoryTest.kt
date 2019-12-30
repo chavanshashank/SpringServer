@@ -1,23 +1,21 @@
 package com.server.repository
 
 import com.server.MySpringBootTest
-import com.server.auth.CustomSimpleGrantedAuthority
 import com.server.repository.auth.AuthenticationSerializer
 import com.server.repository.auth.code.AuthorizationCodeObject
 import com.server.repository.auth.code.AuthorizationCodeRepository
 import com.server.repository.user.User
+import com.server.util.TestCreator
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.oauth2.provider.OAuth2Authentication
-import org.springframework.security.oauth2.provider.OAuth2Request
 import org.springframework.test.context.junit4.SpringRunner
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @RunWith(SpringRunner::class)
 @MySpringBootTest
@@ -41,11 +39,12 @@ class AuthorizationCodeRepositoryTest {
     @Test
     fun testStoreLoad() {
 
-        val auth = AuthenticationSerializer.serialize(createAuthentication())
+        val auth = AuthenticationSerializer.serialize(TestCreator.createAuthentication(User("username", "pw"), "clientId"))
         assertNotNull(auth)
 
         if (auth != null) {
-            val authCodeObject = AuthorizationCodeObject("code", auth)
+            val expiryDate = LocalDateTime.now().plusMinutes(AuthorizationCodeObject.defaultExpiryMinutes).truncatedTo(ChronoUnit.MILLIS)
+            val authCodeObject = AuthorizationCodeObject("code", auth, expiryDate)
             assertNotNull(authorizationCodeRepository.save(authCodeObject).id)
             assertEquals(1, authorizationCodeRepository.count())
 
@@ -53,16 +52,11 @@ class AuthorizationCodeRepositoryTest {
             assertNotNull(loaded)
             assertEquals(authCodeObject.id, loaded?.id)
             assertEquals(authCodeObject.code, loaded?.code)
+            assertEquals(expiryDate, loaded?.expiryDate)
+            assertFalse(loaded?.isExpired == true)
             assertNotNull(loaded?.authentication)
 
             assertNotNull(authorizationCodeRepository.findByCode(authCodeObject.code))
         }
-    }
-
-    private fun createAuthentication(): OAuth2Authentication {
-        val authorities = listOf(CustomSimpleGrantedAuthority("USER"))
-        val oAuth2Request = OAuth2Request(emptyMap(), "clientId", authorities, true, emptySet(), emptySet(), null, emptySet(), emptyMap())
-        val authenticationToken = UsernamePasswordAuthenticationToken(User("username", "pw"), null, authorities)
-        return OAuth2Authentication(oAuth2Request, authenticationToken)
     }
 }
