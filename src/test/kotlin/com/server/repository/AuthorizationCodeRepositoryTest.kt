@@ -14,7 +14,6 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit4.SpringRunner
-import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 @RunWith(SpringRunner::class)
@@ -43,7 +42,7 @@ class AuthorizationCodeRepositoryTest {
         assertNotNull(auth)
 
         if (auth != null) {
-            val expiryDate = LocalDateTime.now().plusMinutes(AuthorizationCodeObject.defaultExpiryMinutes).truncatedTo(ChronoUnit.MILLIS)
+            val expiryDate = AuthorizationCodeObject.defaultExpiryDate.truncatedTo(ChronoUnit.MILLIS)
             val authCodeObject = AuthorizationCodeObject("code", auth, expiryDate)
             assertNotNull(authorizationCodeRepository.save(authCodeObject).id)
             assertEquals(1, authorizationCodeRepository.count())

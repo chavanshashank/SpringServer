@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.common.exceptions.InvalidGrantExcepti
 import org.springframework.security.oauth2.common.util.RandomValueStringGenerator
 import org.springframework.security.oauth2.provider.OAuth2Authentication
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices
-import java.time.LocalDateTime
 
 class CustomAuthorizationCodeServices : AuthorizationCodeServices {
 
@@ -25,8 +24,7 @@ class CustomAuthorizationCodeServices : AuthorizationCodeServices {
         return if (serialized == null) {
             null
         } else {
-            val expiryDate = LocalDateTime.now().plusMinutes(AuthorizationCodeObject.defaultExpiryMinutes)
-            val authCodeObject = AuthorizationCodeObject(code, serialized, expiryDate)
+            val authCodeObject = AuthorizationCodeObject(code, serialized)
             authorizationCodeRepository.save(authCodeObject)
             code
         }
