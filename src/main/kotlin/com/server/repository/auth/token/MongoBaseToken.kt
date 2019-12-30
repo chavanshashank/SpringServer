@@ -4,11 +4,17 @@ import com.server.repository.MongoObject
 import com.server.repository.auth.AuthenticationSerializer
 import org.springframework.security.oauth2.provider.OAuth2Authentication
 
-abstract class MongoBaseToken(var token: String,
-                              private val auth: String?,
-                              val username: String?,
-                              val clientId: String?) : MongoObject() {
+abstract class MongoBaseToken(
+        /** The token value itself */
+        var token: String,
+        /** The serialized Authentication object */
+        private val auth: String?,
+        val username: String?,
+        val clientId: String?) : MongoObject() {
 
+    /**
+     * @return the de-serialized Authentication object
+     */
     val authentication: OAuth2Authentication?
         get() = AuthenticationSerializer.deserialize(auth)
 

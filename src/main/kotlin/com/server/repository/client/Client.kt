@@ -6,9 +6,9 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.oauth2.provider.ClientDetails
 
 class Client(private val secret: String,
-             /** The time in seconds the access tokens of this client are valid, default = 3600 (1 hour) */
+             /** The time in seconds the access tokens of the client are valid, default = 3600 (1 hour) */
              private val accessTokenValidity: Int = 3600,
-             /** The time in seconds the refresh tokens of this client are valid, default = 315569520 (10 years) */
+             /** The time in seconds the refresh tokens of the client are valid, default = 315569520 (10 years) */
              private val refreshTokenValidity: Int = 315569520,
              private val secretRequired: Boolean = true,
              private val autoApprove: Boolean = true,

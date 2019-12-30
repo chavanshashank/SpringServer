@@ -2,7 +2,7 @@ package com.server.repository
 
 import com.server.MySpringBootTest
 import com.server.repository.auth.AuthenticationSerializer
-import com.server.repository.auth.code.AuthorizationCodeObject
+import com.server.repository.auth.code.AuthorizationCode
 import com.server.repository.auth.code.AuthorizationCodeRepository
 import com.server.repository.user.User
 import com.server.util.TestCreator
@@ -42,8 +42,8 @@ class AuthorizationCodeRepositoryTest {
         assertNotNull(auth)
 
         if (auth != null) {
-            val expiryDate = AuthorizationCodeObject.defaultExpiryDate.truncatedTo(ChronoUnit.MILLIS)
-            val authCodeObject = AuthorizationCodeObject("code", auth, expiryDate)
+            val expiryDate = AuthorizationCode.defaultExpiryDate.truncatedTo(ChronoUnit.MILLIS)
+            val authCodeObject = AuthorizationCode("code", auth, expiryDate)
             assertNotNull(authorizationCodeRepository.save(authCodeObject).id)
             assertEquals(1, authorizationCodeRepository.count())
 

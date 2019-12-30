@@ -50,7 +50,7 @@ class OAuth2Config : AuthorizationServerConfigurerAdapter() {
 
     override fun configure(endpoints: AuthorizationServerEndpointsConfigurer) {
         endpoints.authorizationCodeServices(authorizationCodeServices).userDetailsService(userDetailsService)
-                .tokenStore(mongoTokenStore).tokenGranter(tokenGranter(endpoints)).tokenServices(getTokenServices())
+                .tokenStore(mongoTokenStore).tokenServices(getTokenServices()).tokenGranter(tokenGranter(endpoints))
     }
 
     private fun tokenGranter(endpoints: AuthorizationServerEndpointsConfigurer): TokenGranter? {

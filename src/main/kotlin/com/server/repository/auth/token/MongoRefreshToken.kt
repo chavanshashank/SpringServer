@@ -1,6 +1,5 @@
 package com.server.repository.auth.token
 
-import com.server.repository.auth.token.MongoBaseToken
 import org.springframework.security.oauth2.common.OAuth2RefreshToken
 
 class MongoRefreshToken(token: String, auth: String?, username: String?, clientId: String?) :

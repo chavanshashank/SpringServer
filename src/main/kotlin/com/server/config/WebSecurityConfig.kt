@@ -7,9 +7,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 
 @Configuration
-class SecurityConfiguration : WebSecurityConfigurerAdapter() {
+class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
-    // Required to use @Autowired AuthenticationManager in OAuth2Config
+    /** Required to use @Autowired AuthenticationManager in OAuth2Config */
     @Bean
     @Throws(Exception::class)
     override fun authenticationManagerBean(): AuthenticationManager? {

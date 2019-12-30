@@ -1,14 +1,14 @@
 package com.server.unit
 
 import com.server.repository.auth.AuthenticationSerializer
-import com.server.repository.auth.code.AuthorizationCodeObject
+import com.server.repository.auth.code.AuthorizationCode
 import com.server.repository.user.User
 import com.server.util.TestCreator
 import org.junit.Assert.*
 import org.junit.Test
 import java.time.LocalDateTime
 
-class AuthorizationCodeObjectTest {
+class AuthorizationCodeTest {
 
     companion object {
         private const val code = "code"
@@ -19,16 +19,16 @@ class AuthorizationCodeObjectTest {
     fun testExpired() {
 
         val expiryNow = LocalDateTime.now()
-        val o1 = AuthorizationCodeObject(code, auth, expiryNow)
+        val o1 = AuthorizationCode(code, auth, expiryNow)
         assertTrue(o1.isExpired)
 
-        val defaultExpiry = AuthorizationCodeObject.defaultExpiryDate
-        val o2 = AuthorizationCodeObject(code, auth, defaultExpiry)
+        val defaultExpiry = AuthorizationCode.defaultExpiryDate
+        val o2 = AuthorizationCode(code, auth, defaultExpiry)
         assertFalse(o2.isExpired)
         assertTrue(defaultExpiry > LocalDateTime.now())
 
         val expiryPast = LocalDateTime.now().minusMinutes(1)
-        val o3 = AuthorizationCodeObject(code, auth, expiryPast)
+        val o3 = AuthorizationCode(code, auth, expiryPast)
         assertTrue(o3.isExpired)
     }
 
@@ -41,7 +41,7 @@ class AuthorizationCodeObjectTest {
         assertNotNull(auth)
 
         if (auth != null) {
-            val o = AuthorizationCodeObject(code, auth)
+            val o = AuthorizationCode(code, auth)
             val authentication = o.authentication
             assertNotNull(authentication)
             assertTrue(authentication?.userAuthentication?.principal is User)

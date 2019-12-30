@@ -1,7 +1,7 @@
 package com.server.auth
 
 import com.server.repository.auth.AuthenticationSerializer
-import com.server.repository.auth.code.AuthorizationCodeObject
+import com.server.repository.auth.code.AuthorizationCode
 import com.server.repository.auth.code.AuthorizationCodeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException
@@ -18,13 +18,13 @@ class CustomAuthorizationCodeServices : AuthorizationCodeServices {
     private val generator = RandomValueStringGenerator(48)
 
     override fun createAuthorizationCode(authentication: OAuth2Authentication): String? {
-        val code = generator.generate()
-        val serialized = AuthenticationSerializer.serialize(authentication)
 
+        val serialized = AuthenticationSerializer.serialize(authentication)
         return if (serialized == null) {
             null
         } else {
-            val authCodeObject = AuthorizationCodeObject(code, serialized)
+            val code = generator.generate()
+            val authCodeObject = AuthorizationCode(code, serialized)
             authorizationCodeRepository.save(authCodeObject)
             code
         }

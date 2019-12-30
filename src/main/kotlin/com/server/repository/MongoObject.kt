@@ -5,9 +5,9 @@ import org.springframework.data.annotation.Id
 /**
  * Baseclass of all objects stored in MongoDB.
  */
-open class MongoObject {
+abstract class MongoObject {
 
-    /** The MongoDB ObjectId in hex form */
+    /** The MongoDB ObjectId as a hex String */
     @Id
     lateinit var id: String
 }
