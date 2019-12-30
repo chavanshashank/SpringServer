@@ -37,11 +37,11 @@ class CustomAuthorizationCodeServices : AuthorizationCodeServices {
         val authCodeObject = authorizationCodeRepository.findByCode(code)
         return if (authCodeObject != null) {
 
+            // "consume" the code by deleting the object
+            authorizationCodeRepository.delete(authCodeObject)
             if (authCodeObject.isExpired) {
                 throw InvalidGrantException("Authorization code $code is expired")
             } else {
-                // "consume" the code by deleting the object
-                authorizationCodeRepository.delete(authCodeObject)
                 authCodeObject.authentication
             }
         } else {
