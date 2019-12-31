@@ -35,7 +35,8 @@ class UserRepositoryTest {
     @Test
     fun testStoreLoad() {
 
-        val user = User("username", "pw")
+        val authorities = listOf("USER")
+        val user = User("username", "pw", grantedAuthorities = authorities)
         assertNotNull(userRepository.save(user).id)
         assertEquals(1, userRepository.count())
 
@@ -44,6 +45,7 @@ class UserRepositoryTest {
         assertEquals(user.id, loaded?.id)
         assertEquals(user.username, loaded?.username)
         assertEquals(user.password, loaded?.password)
+        assertEquals(authorities.size, loaded?.authorities?.size)
 
         assertEquals(user.id, userRepository.findByUsername(user.username)?.id)
     }

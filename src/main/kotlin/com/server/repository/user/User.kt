@@ -1,5 +1,6 @@
 package com.server.repository.user
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.server.auth.CustomSimpleGrantedAuthority
 import com.server.repository.MongoObject
 import org.springframework.security.core.GrantedAuthority
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails
 class User(
         @get:JvmName("username_") var username: String, private val pw: String, private val enabled: Boolean = true, private val grantedAuthorities: List<String> = listOf()) : MongoObject(), UserDetails {
 
+    @JsonIgnore
     override fun getAuthorities(): List<GrantedAuthority> {
         return grantedAuthorities.map { CustomSimpleGrantedAuthority(it) }
     }
@@ -20,6 +22,7 @@ class User(
         return username
     }
 
+    @JsonIgnore
     override fun isCredentialsNonExpired(): Boolean {
         return true
     }
@@ -28,10 +31,12 @@ class User(
         return pw
     }
 
+    @JsonIgnore
     override fun isAccountNonExpired(): Boolean {
         return true
     }
 
+    @JsonIgnore
     override fun isAccountNonLocked(): Boolean {
         return true
     }
