@@ -6,6 +6,7 @@ import com.server.repository.client.Client
 import com.server.repository.client.ClientRepository
 import com.server.repository.user.User
 import com.server.repository.user.UserRepository
+import org.hamcrest.Matchers.not
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -25,8 +26,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
 class OAuthTest : BaseResourceTest() {
 
-    /** Convenience getter that creates a Basic Authentication header (Base64 encoded cliendId & secret) */
-    private val authHeader: RequestPostProcessor
+    /** Convenience getter that creates a Basic Authorization header (Base64 encoded cliendId & secret) */
+    private val basicAuthHeader: RequestPostProcessor
         get() = httpBasic(clientId, clientSecret)
 
     @Autowired
@@ -77,6 +78,37 @@ class OAuthTest : BaseResourceTest() {
     }
 
     @Test
+    fun testMeEndpoint() {
+
+        // obtain access & refresh token
+        val (accessToken, refreshToken) = obtainTokensWithGrantTypePassword()
+        assertFalse(accessToken.isEmpty())
+        assertFalse(refreshToken.isEmpty())
+
+        mvc.perform(get("/me")
+                .header("Authorization", "Bearer $accessToken"))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.username").value(username))
+                .andExpect(jsonPath("$._username").doesNotExist())
+                .andExpect(jsonPath("$.password").exists())
+                .andExpect(jsonPath("$.password").value(not(password))) // returned password is encoded
+    }
+
+    @Test
+    fun testMeEndpointError() {
+
+        // no authorization header
+        mvc.perform(get("/me"))
+                .andExpect(status().isUnauthorized)
+
+        // invalid token
+        mvc.perform(get("/me")
+                .header("Authorization", "Bearer invalid-token"))
+                .andExpect(status().isUnauthorized)
+    }
+
+    @Test
     fun testGrantTypePassword() {
 
         val (accessToken, refreshToken) = obtainTokensWithGrantTypePassword()
@@ -95,7 +127,7 @@ class OAuthTest : BaseResourceTest() {
                 .param("client_id", clientId)
                 .param("username", username)
                 .param("password", "wrong-password")
-                .with(authHeader))
+                .with(basicAuthHeader))
                 .andExpect(status().isBadRequest)
 
         // test wrong username
@@ -104,7 +136,7 @@ class OAuthTest : BaseResourceTest() {
                 .param("client_id", clientId)
                 .param("username", "wrong-username")
                 .param("password", password)
-                .with(authHeader))
+                .with(basicAuthHeader))
                 .andExpect(status().isBadRequest)
 
         // test wrong client-id
@@ -113,7 +145,7 @@ class OAuthTest : BaseResourceTest() {
                 .param("client_id", "wrong-client-id")
                 .param("username", username)
                 .param("password", password)
-                .with(authHeader))
+                .with(basicAuthHeader))
                 .andExpect(status().isUnauthorized)
 
         // test no auth header
@@ -144,7 +176,7 @@ class OAuthTest : BaseResourceTest() {
 
         // obtain a new access token using the refresh token
         mvc.perform(post("/oauth/token").param("grant_type", "refresh_token").param("refresh_token", refreshToken)
-                .with(authHeader).contentType(jsonContent)).andExpect(status().isOk)
+                .with(basicAuthHeader).contentType(jsonContent)).andExpect(status().isOk)
                 .andExpect(jsonPath("$.access_token").exists()).andExpect(jsonPath("$.refresh_token").exists())
         assertEquals(1, accessTokenRepository.count())
         assertEquals(1, refreshTokenRepository.count())
@@ -155,14 +187,14 @@ class OAuthTest : BaseResourceTest() {
 
         // obtaining a new access token does not work with invalid refresh token (aka access token in this case)
         mvc.perform(post("/oauth/token").param("grant_type", "refresh_token").param("refresh_token", accessToken)
-                .with(authHeader).contentType(jsonContent)).andExpect(status().isUnauthorized)
+                .with(basicAuthHeader).contentType(jsonContent)).andExpect(status().isUnauthorized)
     }
 
     @Test
     fun testGrantTypeClientCredentials() {
 
         mvc.perform(post("/oauth/token").param("grant_type", "client_credentials")
-                .with(authHeader).contentType(jsonContent)).andExpect(status().isOk)
+                .with(basicAuthHeader).contentType(jsonContent)).andExpect(status().isOk)
                 .andExpect(jsonPath("$.access_token").exists()).andExpect(jsonPath("$.refresh_token").doesNotExist())
         assertEquals(1, accessTokenRepository.count())
         // a refresh token is created here because the used client supports the grant type "refresh_token (still does not make much sense for client_credentials grant type as the refresh token is not returned)
@@ -225,7 +257,7 @@ class OAuthTest : BaseResourceTest() {
     fun testInvalidGrantType() {
 
         mvc.perform(post("/oauth/token").param("grant_type", "invalid_grant_type")
-                .with(authHeader).contentType(jsonContent)).andExpect(status().isBadRequest)
+                .with(basicAuthHeader).contentType(jsonContent)).andExpect(status().isBadRequest)
     }
 
     /**
@@ -239,7 +271,7 @@ class OAuthTest : BaseResourceTest() {
                 .param("client_id", clientId)
                 .param("username", username)
                 .param("password", password)
-                .with(authHeader)
+                .with(basicAuthHeader)
                 .accept("application/json;charset=UTF-8"))
                 .andExpect(status().isOk)
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
