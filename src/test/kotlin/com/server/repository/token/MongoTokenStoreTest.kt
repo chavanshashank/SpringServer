@@ -63,7 +63,7 @@ class MongoTokenStoreTest : BaseTokenRepositoryTest() {
         assertEquals(1, tokenStore.findTokensByClientId(clientId).size)
         assertEquals(1, tokenStore.findTokensByClientIdAndUserName(clientId, username).size)
 
-        val loadedAuth = tokenStore.readAuthentication(token.value)
+        val loadedAuth = tokenStore.readAuthentication(token)
         assertNotNull(loadedAuth)
         assertEquals(auth, loadedAuth)
 
