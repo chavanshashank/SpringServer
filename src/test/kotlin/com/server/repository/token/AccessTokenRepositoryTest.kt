@@ -32,7 +32,7 @@ class AccessTokenRepositoryTest : BaseTokenRepositoryTest() {
         assertNotNull(token.id)
         assertEquals(1, accessTokenRepository.count())
 
-        val loaded = accessTokenRepository.getTokenByValue(token.value)
+        val loaded = accessTokenRepository.findByToken(token.value)
         assertNotNull(loaded)
         assertEquals("at", token.value)
         assertEquals("rt", token.refreshToken?.value)
@@ -43,13 +43,13 @@ class AccessTokenRepositoryTest : BaseTokenRepositoryTest() {
         assertNotNull(token.authentication)
         assertEquals("USER", token.authentication?.authorities?.first()?.authority)
 
-        assertEquals(1, accessTokenRepository.getTokensByClientId(clientId).size)
-        assertEquals(0, accessTokenRepository.getTokensByClientId("wrong-client-id").size)
-        assertEquals(1, accessTokenRepository.getTokensByClientIdAndUsername(clientId, username).size)
-        assertEquals(0, accessTokenRepository.getTokensByClientIdAndUsername("wrong-client-id", username).size)
-        assertEquals(0, accessTokenRepository.getTokensByClientIdAndUsername(clientId, "wrong-username").size)
-        assertNotNull(accessTokenRepository.getTokenByAuthenticationId(authId))
-        assertNull(accessTokenRepository.getTokenByAuthenticationId("wrong-auth-id"))
+        assertEquals(1, accessTokenRepository.findByClientId(clientId).size)
+        assertEquals(0, accessTokenRepository.findByClientId("wrong-client-id").size)
+        assertEquals(1, accessTokenRepository.findByClientIdAndUsername(clientId, username).size)
+        assertEquals(0, accessTokenRepository.findByClientIdAndUsername("wrong-client-id", username).size)
+        assertEquals(0, accessTokenRepository.findByClientIdAndUsername(clientId, "wrong-username").size)
+        assertNotNull(accessTokenRepository.findByAuthenticationId(authId))
+        assertNull(accessTokenRepository.findByAuthenticationId("wrong-auth-id"))
     }
 
     @Test
@@ -62,10 +62,10 @@ class AccessTokenRepositoryTest : BaseTokenRepositoryTest() {
         assertNotNull(accessTokenRepository.save(t2).id)
         assertEquals(2, accessTokenRepository.count())
 
-        accessTokenRepository.removeTokensByValue(t1.value)
+        accessTokenRepository.deleteByToken(t1.value)
         assertEquals(1, accessTokenRepository.count())
 
-        accessTokenRepository.removeTokensWithRefreshToken(t2.refreshToken?.value)
+        accessTokenRepository.deleteByRefreshToken(t2.refreshToken?.value)
         assertEquals(0, accessTokenRepository.count())
     }
 }

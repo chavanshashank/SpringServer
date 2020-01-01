@@ -1,6 +1,6 @@
 package com.server.auth
 
-import com.server.repository.auth.*
+import com.server.repository.auth.AuthenticationSerializer
 import com.server.repository.auth.token.AccessTokenRepository
 import com.server.repository.auth.token.MongoAccessToken
 import com.server.repository.auth.token.MongoRefreshToken
@@ -28,7 +28,7 @@ class MongoTokenStore : TokenStore {
     }
 
     override fun readAuthentication(token: String): OAuth2Authentication? {
-        val accessToken = accessTokenDb.getTokenByValue(token)
+        val accessToken = accessTokenDb.findByToken(token)
         return if (accessToken == null) {
             null
         } else {
@@ -47,24 +47,19 @@ class MongoTokenStore : TokenStore {
         val username = if (authentication.isClientOnly) null else authentication.name
         val clientId = if (authentication.oAuth2Request == null) null else authentication.oAuth2Request.clientId
         val oAuth2AccessToken = MongoAccessToken(token.value, token.refreshToken.value, AuthenticationSerializer.serialize(authentication), authId, token.expiration, token.tokenType, token.scope, token.additionalInformation, username, clientId)
-        // in case this token already exists -> remove it before storing a new one
-        removeAccessToken(token)
-        if (token.refreshToken != null) {
-            removeAccessTokenUsingRefreshToken(token.refreshToken)
-        }
         accessTokenDb.save(oAuth2AccessToken)
     }
 
     override fun readAccessToken(tokenValue: String): OAuth2AccessToken? {
-        return accessTokenDb.getTokenByValue(tokenValue)
+        return accessTokenDb.findByToken(tokenValue)
     }
 
     override fun removeAccessToken(token: OAuth2AccessToken) {
-        accessTokenDb.removeTokensByValue(token.value)
+        accessTokenDb.deleteByToken(token.value)
     }
 
     override fun removeAccessTokenUsingRefreshToken(refreshToken: OAuth2RefreshToken) {
-        accessTokenDb.removeTokensWithRefreshToken(refreshToken.value)
+        accessTokenDb.deleteByRefreshToken(refreshToken.value)
     }
 
     override fun storeRefreshToken(refreshToken: OAuth2RefreshToken, authentication: OAuth2Authentication) {
@@ -75,11 +70,11 @@ class MongoTokenStore : TokenStore {
     }
 
     override fun readRefreshToken(tokenValue: String): OAuth2RefreshToken? {
-        return refreshTokenDb.getTokenByValue(tokenValue)
+        return refreshTokenDb.findByToken(tokenValue)
     }
 
     override fun readAuthenticationForRefreshToken(token: OAuth2RefreshToken): OAuth2Authentication? {
-        val refreshToken = refreshTokenDb.getTokenByValue(token.value)
+        val refreshToken = refreshTokenDb.findByToken(token.value)
         return if (refreshToken == null) {
             null
         } else {
@@ -94,21 +89,21 @@ class MongoTokenStore : TokenStore {
     }
 
     override fun removeRefreshToken(token: OAuth2RefreshToken) {
-        refreshTokenDb.removeTokensByValue(token.value)
+        refreshTokenDb.deleteByToken(token.value)
     }
 
     override fun getAccessToken(authentication: OAuth2Authentication): OAuth2AccessToken? {
         val authenticationId = authenticationKeyGenerator.extractKey(authentication)
-        return accessTokenDb.getTokenByAuthenticationId(authenticationId)
+        return accessTokenDb.findByAuthenticationId(authenticationId)
     }
 
     override fun findTokensByClientIdAndUserName(clientId: String, username: String): Collection<OAuth2AccessToken> {
-        val tokens = accessTokenDb.getTokensByClientIdAndUsername(clientId, username)
+        val tokens = accessTokenDb.findByClientIdAndUsername(clientId, username)
         return ArrayList<OAuth2AccessToken>(tokens)
     }
 
     override fun findTokensByClientId(clientId: String): Collection<OAuth2AccessToken> {
-        val tokens = accessTokenDb.getTokensByClientId(clientId)
+        val tokens = accessTokenDb.findByClientId(clientId)
         return ArrayList<OAuth2AccessToken>(tokens)
     }
 }

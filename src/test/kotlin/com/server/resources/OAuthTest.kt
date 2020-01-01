@@ -175,7 +175,7 @@ class OAuthTest : BaseResourceTest() {
         assertEquals(1, refreshTokenRepository.count())
 
         // remove the previous access token
-        assertNotNull(accessTokenRepository.removeTokensWithRefreshToken(refreshToken))
+        assertNotNull(accessTokenRepository.deleteByRefreshToken(refreshToken))
         assertEquals(0, accessTokenRepository.count())
 
         // obtain a new access token using the refresh token

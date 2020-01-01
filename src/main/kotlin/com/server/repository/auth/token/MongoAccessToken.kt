@@ -11,7 +11,7 @@ class MongoAccessToken(token: String,
                        val authenticationId: String?,
                        private val expirationDate: Date?,
                        private val type: String?,
-                       private val scopes: MutableSet<String>,
+                       private val scopes: MutableSet<String>?,
                        private val additionalInfo: MutableMap<String, Any>?,
                        username: String?,
                        clientId: String?) :
@@ -37,7 +37,7 @@ class MongoAccessToken(token: String,
         return type
     }
 
-    override fun getScope(): MutableSet<String> {
+    override fun getScope(): MutableSet<String>? {
         return scopes
     }
 

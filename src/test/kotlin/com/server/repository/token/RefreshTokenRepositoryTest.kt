@@ -33,7 +33,7 @@ class RefreshTokenRepositoryTest : BaseTokenRepositoryTest() {
         assertNotNull(token.id)
         assertEquals(1, refreshTokenRepository.count())
 
-        val loaded = refreshTokenRepository.getTokenByValue(token.value)
+        val loaded = refreshTokenRepository.findByToken(token.value)
         assertNotNull(loaded)
         assertEquals("rt", token.value)
         assertEquals(username, token.username)
@@ -48,7 +48,7 @@ class RefreshTokenRepositoryTest : BaseTokenRepositoryTest() {
         assertNotNull(refreshTokenRepository.save(token).id)
         assertEquals(1, refreshTokenRepository.count())
 
-        refreshTokenRepository.removeTokensByValue(token.value)
+        refreshTokenRepository.deleteByToken(token.value)
         assertEquals(0, refreshTokenRepository.count())
     }
 }

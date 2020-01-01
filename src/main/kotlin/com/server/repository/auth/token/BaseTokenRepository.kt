@@ -12,31 +12,31 @@ import org.springframework.data.mongodb.core.query.isEqualTo
 
 interface BaseTokenRepository<T : MongoBaseToken> {
     /**
-     * Retrieves a token from the database by it's value.
+     * Retrieves a token from the database by it's token value.
      * @param token: The token value to search for. This is internally encrypted.
      */
-    fun getTokenByValue(token: String?): T?
+    fun findByToken(token: String?): T?
 
     /**
      * Retrieves tokens from the database by their client id and username.
      * @param clientId: The client id to search for.
      * @param username: The username to search for.
      */
-    fun getTokensByClientIdAndUsername(clientId: String?, username: String?): List<T>
+    fun findByClientIdAndUsername(clientId: String?, username: String?): List<T>
 
     /**
-     * Removes a token from the database by it's value.
+     * Removes a token from the database by it's token value.
      * @param token: The token value to remove. This is internally encrypted.
      */
-    fun removeTokensByValue(token: String?)
+    fun deleteByToken(token: String?)
 }
 
 interface CustomRefreshTokenRepository : BaseTokenRepository<MongoRefreshToken>
 
 interface CustomAccessTokenRepository : BaseTokenRepository<MongoAccessToken> {
-    fun getTokensByClientId(clientId: String?): List<MongoAccessToken>
-    fun getTokenByAuthenticationId(authId: String?): MongoAccessToken?
-    fun removeTokensWithRefreshToken(refreshToken: String?)
+    fun findByClientId(clientId: String?): List<MongoAccessToken>
+    fun findByAuthenticationId(authId: String?): MongoAccessToken?
+    fun deleteByRefreshToken(refreshToken: String?)
 }
 
 abstract class BaseTokenRepositoryImpl<T : MongoBaseToken>(protected val clazz: Class<T>) : AbstractMongoEventListener<T>(), BaseTokenRepository<T> {
@@ -52,19 +52,19 @@ abstract class BaseTokenRepositoryImpl<T : MongoBaseToken>(protected val clazz: 
         protected const val encryptedTokenValueKey = "encryptedTokenValue"
     }
 
-    override fun getTokenByValue(token: String?): T? {
+    override fun findByToken(token: String?): T? {
         val q = Query()
         q.addCriteria(Criteria.where(tokenKey).isEqualTo(crypto.encrypt(token)))
         return mongoTemplate.findOne(q, clazz)
     }
 
-    override fun getTokensByClientIdAndUsername(clientId: String?, username: String?): List<T> {
+    override fun findByClientIdAndUsername(clientId: String?, username: String?): List<T> {
         val q = Query()
         q.addCriteria(Criteria.where("clientId").isEqualTo(clientId).and("username").isEqualTo(username))
         return mongoTemplate.find(q, clazz)
     }
 
-    override fun removeTokensByValue(token: String?) {
+    override fun deleteByToken(token: String?) {
         val q = Query()
         q.addCriteria(Criteria.where(tokenKey).isEqualTo(crypto.encrypt(token)))
         mongoTemplate.remove(q, clazz)
@@ -111,19 +111,19 @@ class AccessTokenRepositoryImpl : BaseTokenRepositoryImpl<MongoAccessToken>(Mong
         }
     }
 
-    override fun getTokensByClientId(clientId: String?): List<MongoAccessToken> {
+    override fun findByClientId(clientId: String?): List<MongoAccessToken> {
         val q = Query()
         q.addCriteria(Criteria.where("clientId").isEqualTo(clientId))
         return mongoTemplate.find(q, clazz)
     }
 
-    override fun getTokenByAuthenticationId(authId: String?): MongoAccessToken? {
+    override fun findByAuthenticationId(authId: String?): MongoAccessToken? {
         val q = Query()
         q.addCriteria(Criteria.where("authenticationId").isEqualTo(authId))
         return mongoTemplate.findOne(q, clazz)
     }
 
-    override fun removeTokensWithRefreshToken(refreshToken: String?) {
+    override fun deleteByRefreshToken(refreshToken: String?) {
         val q = Query()
         q.addCriteria(Criteria.where(refreshTokenKey).isEqualTo(crypto.encrypt(refreshToken)))
         mongoTemplate.remove(q, clazz)
