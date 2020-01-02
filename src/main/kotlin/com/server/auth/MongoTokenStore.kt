@@ -13,6 +13,9 @@ import org.springframework.security.oauth2.provider.token.DefaultAuthenticationK
 import org.springframework.security.oauth2.provider.token.TokenStore
 import java.util.*
 
+/**
+ * MongoDB implementation of the TokenStore interface for handling reading and storage of access & refresh tokens.
+ */
 class MongoTokenStore : TokenStore {
 
     @Autowired

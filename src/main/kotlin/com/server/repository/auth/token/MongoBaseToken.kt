@@ -4,6 +4,9 @@ import com.server.repository.MongoObject
 import com.server.repository.auth.AuthenticationSerializer
 import org.springframework.security.oauth2.provider.OAuth2Authentication
 
+/**
+ * Base class of all tokens stored in the database.
+ */
 abstract class MongoBaseToken(
         /** The token value itself */
         var token: String,

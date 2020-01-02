@@ -14,6 +14,7 @@ interface BaseTokenRepository<T : MongoBaseToken> {
     /**
      * Retrieves a token from the database by it's token value.
      * @param token: The token value to search for. This is internally encrypted.
+     * @return The token with the provided value.
      */
     fun findByToken(token: String?): T?
 
@@ -21,6 +22,7 @@ interface BaseTokenRepository<T : MongoBaseToken> {
      * Retrieves tokens from the database by their client id and username.
      * @param clientId: The client id to search for.
      * @param username: The username to search for.
+     * @return A list of tokens sharing the same client id and username.
      */
     fun findByClientIdAndUsername(clientId: String?, username: String?): List<T>
 
@@ -34,8 +36,24 @@ interface BaseTokenRepository<T : MongoBaseToken> {
 interface CustomRefreshTokenRepository : BaseTokenRepository<MongoRefreshToken>
 
 interface CustomAccessTokenRepository : BaseTokenRepository<MongoAccessToken> {
+    /**
+     * Retrieves tokens from the database that share the provided client id.
+     * @param clientId: The client id to search for.
+     * @return A list of tokens sharing the same client id.
+     */
     fun findByClientId(clientId: String?): List<MongoAccessToken>
+
+    /**
+     * Retrieves a token from the database with the provided authentication id.
+     * @param authId: The authentication id to search for.
+     * @return The token with the provided authentication id.
+     */
     fun findByAuthenticationId(authId: String?): MongoAccessToken?
+
+    /**
+     * Removes all tokens with the provided refresh token value.
+     * @param refreshToken: The refresh token value to search for.
+     */
     fun deleteByRefreshToken(refreshToken: String?)
 }
 

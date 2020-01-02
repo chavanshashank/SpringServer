@@ -74,6 +74,8 @@ class MongoTokenStoreTest : BaseTokenRepositoryTest() {
         assertEquals(1, accessTokenRepository.count())
 
         tokenStore.removeAccessTokenUsingRefreshToken(refreshToken)
+        assertNull(tokenStore.readAccessToken(token.value))
+        assertNull(tokenStore.readAuthentication(token))
         assertEquals(0, accessTokenRepository.count())
     }
 
@@ -95,6 +97,7 @@ class MongoTokenStoreTest : BaseTokenRepositoryTest() {
 
         tokenStore.removeRefreshToken(token)
         assertNull(tokenStore.readRefreshToken(token.value))
+        assertNull(tokenStore.readAuthenticationForRefreshToken(token))
         assertEquals(0, refreshTokenRepository.count())
     }
 }
