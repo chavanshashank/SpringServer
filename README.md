@@ -11,9 +11,8 @@ Pre-configured Spring implementation with out of the box support for OAuth2, Mon
  - Preconfigured property (.yml) files & profiles
  - **REST API** configuration secured by OAuth2
  - **MongoDB** support (Spring Data MongoDB)
- - Repository for OAuth2AccessToken
- - Repository for OAuth2RefreshToken
- - Reposotiry for OAuth2 User
+ - Repository for OAuth2Access- & RefreshToken
+ - Repository for OAuth2 User
  - Repository for OAuth2 Client
  - Repository for AuthorizationCode
  - **Well tested**
