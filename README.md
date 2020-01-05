@@ -2,6 +2,7 @@
 Pre-configured Spring implementation with out of the box support for OAuth2, MongoDB, REST endpoints, ...
 
 # Features
+ - Written in Kotlin
  - OAuth2 support
  - Implemented grant types: password, implicit, authorization_code, refresh_token
  - Configured form / web login
