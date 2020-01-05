@@ -67,7 +67,7 @@ abstract class BaseTokenRepositoryImpl<T : MongoBaseToken>(protected val clazz: 
 
     companion object {
         protected const val tokenKey = "token"
-        protected const val encryptedTokenValueKey = "encryptedTokenValue"
+        protected const val encryptedTokenKey = "encryptedToken"
     }
 
     override fun findByToken(token: String?): T? {
@@ -90,17 +90,19 @@ abstract class BaseTokenRepositoryImpl<T : MongoBaseToken>(protected val clazz: 
 
     override fun onBeforeSave(event: BeforeSaveEvent<T>) {
         super.onBeforeSave(event)
-        if (event.document?.getBoolean(encryptedTokenValueKey) != true) {
-            event.document?.set(tokenKey, crypto.encrypt(event.source.token))
-            event.document?.set(encryptedTokenValueKey, true)
+        // as an additional layer of security, token values are encrypted before storage
+        if (event.document?.getBoolean(encryptedTokenKey) != true) {
+            event.document?.set(tokenKey, crypto.encrypt(event.source.value))
+            event.document?.set(encryptedTokenKey, true)
         }
     }
 
     override fun onAfterLoad(event: AfterLoadEvent<T>) {
         super.onAfterLoad(event)
-        if (event.document?.getBoolean(encryptedTokenValueKey) != false) {
+        // decrypt token value after load
+        if (event.document?.getBoolean(encryptedTokenKey) == true) {
             event.document?.set(tokenKey, crypto.decrypt(event.source.getString(tokenKey)))
-            event.document?.set(encryptedTokenValueKey, false)
+            event.document?.set(encryptedTokenKey, false)
         }
     }
 }
@@ -108,24 +110,24 @@ abstract class BaseTokenRepositoryImpl<T : MongoBaseToken>(protected val clazz: 
 class AccessTokenRepositoryImpl : BaseTokenRepositoryImpl<MongoAccessToken>(MongoAccessToken::class.java), CustomAccessTokenRepository {
 
     companion object {
-        private const val refreshTokenKey = "refreshTokenValue"
-        private const val encryptedRefreshTokenValueKey = "encryptedRefreshTokenValue"
+        private const val refreshTokenKey = "refreshToken"
+        private const val encryptedRefreshTokenKey = "encryptedRefreshToken"
     }
 
     override fun onBeforeSave(event: BeforeSaveEvent<MongoAccessToken>) {
         super.onBeforeSave(event)
 
-        if (event.document?.getBoolean(encryptedRefreshTokenValueKey) != true) {
-            event.document?.set(refreshTokenKey, crypto.encrypt(event.source.refreshToken?.value))
-            event.document?.set(encryptedRefreshTokenValueKey, true)
+        if (event.document?.getBoolean(encryptedRefreshTokenKey) != true) {
+            event.document?.set(refreshTokenKey, crypto.encrypt(event.source.refreshToken))
+            event.document?.set(encryptedRefreshTokenKey, true)
         }
     }
 
     override fun onAfterLoad(event: AfterLoadEvent<MongoAccessToken>) {
         super.onAfterLoad(event)
-        if (event.document?.getBoolean(encryptedRefreshTokenValueKey) != false) {
+        if (event.document?.getBoolean(encryptedRefreshTokenKey) == true) {
             event.document?.set(refreshTokenKey, crypto.decrypt(event.source.getString(refreshTokenKey)))
-            event.document?.set(encryptedRefreshTokenValueKey, false)
+            event.document?.set(encryptedRefreshTokenKey, false)
         }
     }
 

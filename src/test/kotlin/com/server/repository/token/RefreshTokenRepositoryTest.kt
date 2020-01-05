@@ -2,11 +2,11 @@ package com.server.repository.token
 
 import com.server.repository.auth.token.RefreshTokenRepository
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken
 
 class RefreshTokenRepositoryTest : BaseTokenRepositoryTest() {
 
@@ -39,6 +39,8 @@ class RefreshTokenRepositoryTest : BaseTokenRepositoryTest() {
         assertEquals(username, token.username)
         assertEquals(clientId, token.clientId)
         assertNotNull(token.authentication)
+        assertNotNull(token.oAuth2RefreshToken)
+        assertTrue(token.oAuth2RefreshToken is ExpiringOAuth2RefreshToken)
         assertEquals("USER", token.authentication?.authorities?.first()?.authority)
     }
 

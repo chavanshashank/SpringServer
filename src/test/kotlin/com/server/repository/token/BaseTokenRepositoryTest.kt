@@ -23,13 +23,15 @@ abstract class BaseTokenRepositoryTest {
     protected fun createAccessToken(token: String = "at", refreshToken: String = "rt"): MongoAccessToken {
         val user = User(username, "pw")
         val date = Date()
+        val refreshTokenExpiration = Date()
         val authObject = createAuthentication(user, clientId)
-        return MongoAccessToken(token, refreshToken, AuthenticationSerializer.serialize(authObject), authId, date, "bearer", mutableSetOf("app"), null, username, clientId)
+        return MongoAccessToken(token, AuthenticationSerializer.serialize(authObject), username, clientId, date, refreshToken, refreshTokenExpiration, authId, "bearer", mutableSetOf("app"), null)
     }
 
     protected fun createRefreshToken(token: String = "rt"): MongoRefreshToken {
         val user = User(username, "pw")
         val authObject = createAuthentication(user, clientId)
-        return MongoRefreshToken(token, AuthenticationSerializer.serialize(authObject), username, clientId)
+        val refreshTokenExpiration = Date()
+        return MongoRefreshToken(token, AuthenticationSerializer.serialize(authObject), username, clientId, refreshTokenExpiration)
     }
 }

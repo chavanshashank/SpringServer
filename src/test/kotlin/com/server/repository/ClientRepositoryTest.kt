@@ -45,7 +45,7 @@ class ClientRepositoryTest {
         assertEquals(client.scope.size, loaded?.scope?.size)
         assertTrue(loaded?.isAutoApprove(null) == true)
         assertFalse(loaded?.accessTokenValiditySeconds == 0)
-        assertTrue(loaded?.refreshTokenValiditySeconds == 0) // refresh token does not expire
+        assertTrue(loaded?.refreshTokenValiditySeconds == 315569520)
         assertEquals(client.clientSecret, loaded?.clientSecret)
     }
 }

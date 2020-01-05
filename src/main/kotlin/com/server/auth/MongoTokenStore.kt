@@ -6,6 +6,7 @@ import com.server.repository.auth.token.MongoAccessToken
 import com.server.repository.auth.token.MongoRefreshToken
 import com.server.repository.auth.token.RefreshTokenRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken
 import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.security.oauth2.common.OAuth2RefreshToken
 import org.springframework.security.oauth2.provider.OAuth2Authentication
@@ -49,12 +50,19 @@ class MongoTokenStore : TokenStore {
         val authId = authenticationKeyGenerator.extractKey(authentication)
         val username = if (authentication.isClientOnly) null else authentication.name
         val clientId = if (authentication.oAuth2Request == null) null else authentication.oAuth2Request.clientId
-        val oAuth2AccessToken = MongoAccessToken(token.value, token.refreshToken.value, AuthenticationSerializer.serialize(authentication), authId, token.expiration, token.tokenType, token.scope, token.additionalInformation, username, clientId)
+
+        val refreshToken = token.refreshToken
+        val refreshTokenExpiration = if (refreshToken is ExpiringOAuth2RefreshToken) {
+            refreshToken.expiration
+        } else {
+            null
+        }
+        val oAuth2AccessToken = MongoAccessToken(token.value, AuthenticationSerializer.serialize(authentication), username, clientId, token.expiration, refreshToken.value, refreshTokenExpiration, authId, token.tokenType, token.scope, token.additionalInformation)
         accessTokenDb.save(oAuth2AccessToken)
     }
 
     override fun readAccessToken(tokenValue: String): OAuth2AccessToken? {
-        return accessTokenDb.findByToken(tokenValue)
+        return accessTokenDb.findByToken(tokenValue)?.oAuth2AccessToken
     }
 
     override fun removeAccessToken(token: OAuth2AccessToken) {
@@ -68,12 +76,13 @@ class MongoTokenStore : TokenStore {
     override fun storeRefreshToken(refreshToken: OAuth2RefreshToken, authentication: OAuth2Authentication) {
         val username = if (authentication.isClientOnly) null else authentication.name
         val clientId = if (authentication.oAuth2Request == null) null else authentication.oAuth2Request.clientId
-        val oAuth2RefreshToken = MongoRefreshToken(refreshToken.value, AuthenticationSerializer.serialize(authentication), username, clientId)
+
+        val oAuth2RefreshToken = MongoRefreshToken(refreshToken.value, AuthenticationSerializer.serialize(authentication), username, clientId, (refreshToken as? ExpiringOAuth2RefreshToken)?.expiration)
         refreshTokenDb.save(oAuth2RefreshToken)
     }
 
     override fun readRefreshToken(tokenValue: String): OAuth2RefreshToken? {
-        return refreshTokenDb.findByToken(tokenValue)
+        return refreshTokenDb.findByToken(tokenValue)?.oAuth2RefreshToken
     }
 
     override fun readAuthenticationForRefreshToken(token: OAuth2RefreshToken): OAuth2Authentication? {
@@ -97,16 +106,16 @@ class MongoTokenStore : TokenStore {
 
     override fun getAccessToken(authentication: OAuth2Authentication): OAuth2AccessToken? {
         val authenticationId = authenticationKeyGenerator.extractKey(authentication)
-        return accessTokenDb.findByAuthenticationId(authenticationId)
+        return accessTokenDb.findByAuthenticationId(authenticationId)?.oAuth2AccessToken
     }
 
     override fun findTokensByClientIdAndUserName(clientId: String, username: String): Collection<OAuth2AccessToken> {
-        val tokens = accessTokenDb.findByClientIdAndUsername(clientId, username)
+        val tokens = accessTokenDb.findByClientIdAndUsername(clientId, username).map { it.oAuth2AccessToken }
         return ArrayList<OAuth2AccessToken>(tokens)
     }
 
     override fun findTokensByClientId(clientId: String): Collection<OAuth2AccessToken> {
-        val tokens = accessTokenDb.findByClientId(clientId)
+        val tokens = accessTokenDb.findByClientId(clientId).map { it.oAuth2AccessToken }
         return ArrayList<OAuth2AccessToken>(tokens)
     }
 }

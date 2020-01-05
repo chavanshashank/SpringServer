@@ -6,6 +6,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken
 
 class AccessTokenRepositoryTest : BaseTokenRepositoryTest() {
 
@@ -35,12 +36,14 @@ class AccessTokenRepositoryTest : BaseTokenRepositoryTest() {
         val loaded = accessTokenRepository.findByToken(token.value)
         assertNotNull(loaded)
         assertEquals("at", token.value)
-        assertEquals("rt", token.refreshToken?.value)
+        assertEquals("rt", token.refreshToken)
         assertEquals("authId", token.authenticationId)
         assertEquals(username, token.username)
         assertEquals(clientId, token.clientId)
         assertEquals(token.expiration, loaded?.expiration)
         assertNotNull(token.authentication)
+        assertNotNull(token.oAuth2AccessToken)
+        assertTrue(token.oAuth2AccessToken.refreshToken is ExpiringOAuth2RefreshToken)
         assertEquals("USER", token.authentication?.authorities?.first()?.authority)
 
         assertEquals(1, accessTokenRepository.findByClientId(clientId).size)
@@ -65,7 +68,7 @@ class AccessTokenRepositoryTest : BaseTokenRepositoryTest() {
         accessTokenRepository.deleteByToken(t1.value)
         assertEquals(1, accessTokenRepository.count())
 
-        accessTokenRepository.deleteByRefreshToken(t2.refreshToken?.value)
+        accessTokenRepository.deleteByRefreshToken(t2.refreshToken)
         assertEquals(0, accessTokenRepository.count())
     }
 }
