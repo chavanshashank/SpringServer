@@ -13,7 +13,7 @@ Pre-configured Spring implementation with out of the box support for OAuth2, Mon
  - **MongoDB** support (Spring Data MongoDB)
  - Repository for OAuth2AccessToken
  - Repository for OAuth2RefreshToken
- - Reposotiry fo OAuth2 User
+ - Reposotiry for OAuth2 User
  - Repository for OAuth2 Client
  - Repository for AuthorizationCode
  - **Well tested**
