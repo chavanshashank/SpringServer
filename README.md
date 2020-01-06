@@ -16,3 +16,4 @@ Pre-configured Spring implementation with out of the box support for OAuth2, Mon
  - Repository for OAuth2 Client
  - Repository for AuthorizationCode
  - **Well tested**
+ - Maven
