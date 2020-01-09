@@ -12,7 +12,6 @@ class Client(var secret: String?,
              private val accessTokenValidity: Int = 3600,
              /** The time in seconds the refresh tokens of the client are valid, default = 315569520 / 10 years (0 = never expires) */
              private val refreshTokenValidity: Int = 315569520,
-             private val secretRequired: Boolean = true,
              private val autoApprove: Boolean = true,
              private val resources: List<String> = listOf(),
              private val redirectUris: List<String> = listOf(),
@@ -26,10 +25,7 @@ class Client(var secret: String?,
 
     @JsonIgnore
     override fun isSecretRequired(): Boolean {
-        if (secret.isNullOrEmpty()) {
-            return false
-        }
-        return secretRequired
+        return !secret.isNullOrEmpty()
     }
 
     @JsonIgnore

@@ -161,6 +161,24 @@ class OAuthTest : BaseResourceTest() {
                 .param("password", password))
                 .andExpect(status().isUnauthorized)
 
+        // auth header with client id that does not exist
+        mvc.perform(post("/oauth/token")
+                .param("grant_type", "password")
+                .param("client_id", clientId)
+                .param("username", username)
+                .param("password", password)
+                .with(httpBasic("1e051ea44e64347c8530c261", clientSecret)))
+                .andExpect(status().isUnauthorized)
+
+        // auth header with client secret that does not exist (does not match id)
+        mvc.perform(post("/oauth/token")
+                .param("grant_type", "password")
+                .param("client_id", clientId)
+                .param("username", username)
+                .param("password", password)
+                .with(httpBasic(clientId, "wrong-client-secret")))
+                .andExpect(status().isUnauthorized)
+
         assertEquals(0, accessTokenRepository.count())
         assertEquals(0, refreshTokenRepository.count())
     }
