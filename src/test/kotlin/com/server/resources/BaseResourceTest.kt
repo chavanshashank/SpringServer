@@ -3,6 +3,7 @@ package com.server.resources
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.server.MyActiveProfile
+import com.server.repository.MongoObject
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +23,9 @@ abstract class BaseResourceTest {
     @Autowired
     protected lateinit var webApplicationContext: WebApplicationContext
 
-    private val mapper = ObjectMapper()
+    @Autowired
+    protected lateinit var objectMapper: ObjectMapper
+
     protected val jsonContent = MediaType.APPLICATION_JSON
 
     protected lateinit var mvc: MockMvc
@@ -32,12 +35,12 @@ abstract class BaseResourceTest {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build()
     }
 
-    protected fun toJson(`object`: Any): String? {
+    protected fun toJson(`object`: Any): String {
         return try {
-            mapper.writeValueAsString(`object`)
+            objectMapper.writeValueAsString(`object`)
         } catch (e: JsonProcessingException) {
             e.printStackTrace()
-            null
+            ""
         }
     }
 }

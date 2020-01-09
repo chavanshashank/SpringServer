@@ -69,7 +69,7 @@ class OAuthTest : BaseResourceTest() {
         assertEquals(1, userRepository.count())
 
         val client = Client(passwordEncoder.encode(clientSecret),
-                scopes = listOf("app"),
+                scope = listOf("app"),
                 grantTypes = listOf("password", "refresh_token", "client_credentials", "authorization_code"),
                 redirectUris = listOf(redirectUri, "http://localhost:4200"))
         client.id = clientId
@@ -89,6 +89,7 @@ class OAuthTest : BaseResourceTest() {
                 .header("Authorization", "Bearer $accessToken"))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.id").isNotEmpty)
                 .andExpect(jsonPath("$.username").value(username))
                 .andExpect(jsonPath("$._username").doesNotExist())
                 .andExpect(jsonPath("$.authorities").doesNotExist()) // not returned by endpoint

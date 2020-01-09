@@ -1,5 +1,7 @@
 package com.server.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.server.auth.CustomAuthorizationCodeServices
 import com.server.auth.MongoTokenStore
 import com.server.auth.clientdetails.OAuthClientDetailsService
@@ -19,6 +21,14 @@ class BeanConfig {
 
     @Autowired
     private lateinit var cryptoConfig: CryptoConfig
+
+    @Bean
+    fun objectMapper(): ObjectMapper {
+        val mapper = ObjectMapper()
+        // KotlinModule is important for proper default constructor parameter use with Jackson and Kotlin classes
+        mapper.registerModule(KotlinModule())
+        return mapper
+    }
 
     @Bean
     fun getMongoTokenStore(): MongoTokenStore {

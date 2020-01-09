@@ -6,8 +6,7 @@ import com.server.repository.MongoObject
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class User(
-        @get:JvmName("username_") var username: String, @get:JvmName("password_") var password: String) : MongoObject(), UserDetails {
+class User(@get:JvmName("username_") var username: String, @get:JvmName("password_") var password: String) : MongoObject(), UserDetails {
 
     companion object {
         private const val serialVersionUID = -435768273782348762L

@@ -1,26 +1,23 @@
-package com.server.repository
+package com.server.resources
 
-import com.server.MySpringBootTest
 import com.server.repository.client.Client
 import com.server.repository.client.ClientRepository
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.repository.findByIdOrNull
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@RunWith(SpringRunner::class)
-@MySpringBootTest
-class ClientRepositoryTest {
+class ClientResourceTest : BaseResourceTest() {
 
     @Autowired
     private lateinit var clientRepository: ClientRepository
 
     @Before
-    fun setup() {
+    override fun setup() {
+        super.setup()
         clientRepository.deleteAll()
         assertEquals(0, clientRepository.count())
     }
@@ -32,20 +29,19 @@ class ClientRepositoryTest {
     }
 
     @Test
-    fun testStoreLoad() {
+    fun testCreateClient() {
 
         val client = Client("secret", scope = listOf("app"), redirectUris = listOf("https://example.com", "http://localhost:4200"))
-        assertNotNull(clientRepository.save(client).id)
+        assertEquals(0, clientRepository.count())
+
+        val json = toJson(client)
+        mvc.perform(post("/api/client").content(json).contentType(jsonContent)).andExpect(status().isOk)
         assertEquals(1, clientRepository.count())
 
-        val loaded = clientRepository.findByIdOrNull(client.id)
+        val loaded = clientRepository.findAll().firstOrNull()
         assertNotNull(loaded)
-        assertEquals(client.id, loaded?.id)
-        assertEquals(client.registeredRedirectUri.size, loaded?.registeredRedirectUri?.size)
-        assertEquals(client.scope.size, loaded?.scope?.size)
-        assertTrue(loaded?.isAutoApprove(null) == true)
+        assertNotNull(loaded?.id) // database assigned id
         assertFalse(loaded?.accessTokenValiditySeconds == 0)
-        assertTrue(loaded?.refreshTokenValiditySeconds == 315569520)
-        assertEquals(client.clientSecret, loaded?.clientSecret)
+        assertNotEquals(client.secret, loaded?.secret) // secret is encoded
     }
 }
