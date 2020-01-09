@@ -5,7 +5,7 @@ import com.server.repository.MongoObject
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.oauth2.provider.ClientDetails
 
-class Client(private val secret: String,
+class Client(private val secret: String?,
              /** The time in seconds the access tokens of the client are valid, default = 3600 (1 hour) */
              private val accessTokenValidity: Int = 3600,
              /** The time in seconds the refresh tokens of the client are valid, default = 315569520 / 10 years (0 = never expires) */
@@ -23,6 +23,9 @@ class Client(private val secret: String,
     }
 
     override fun isSecretRequired(): Boolean {
+        if (secret.isNullOrEmpty()) {
+            return false
+        }
         return secretRequired
     }
 
@@ -54,7 +57,7 @@ class Client(private val secret: String,
         return refreshTokenValidity
     }
 
-    override fun getClientSecret(): String {
+    override fun getClientSecret(): String? {
         return secret
     }
 
