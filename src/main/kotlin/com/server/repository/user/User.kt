@@ -7,7 +7,16 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class User(
-        @get:JvmName("username_") var username: String, private val pw: String, private val enabled: Boolean = true, private val grantedAuthorities: List<String> = listOf()) : MongoObject(), UserDetails {
+        @get:JvmName("username_") var username: String, @get:JvmName("password_") var password: String) : MongoObject(), UserDetails {
+
+    companion object {
+        private const val serialVersionUID = -435768273782348762L
+    }
+
+    var enabled: Boolean = true
+
+    @JsonIgnore
+    var grantedAuthorities: List<String> = listOf()
 
     @JsonIgnore
     override fun getAuthorities(): List<GrantedAuthority> {
@@ -28,7 +37,7 @@ class User(
     }
 
     override fun getPassword(): String {
-        return pw
+        return password
     }
 
     @JsonIgnore
@@ -43,14 +52,14 @@ class User(
 
     override fun equals(other: Any?): Boolean {
         if (other is User) {
-            return username == other.username && pw == other.password && enabled == other.enabled && grantedAuthorities == other.grantedAuthorities
+            return username == other.username && password == other.password && enabled == other.enabled && grantedAuthorities == other.grantedAuthorities
         }
         return false
     }
 
     override fun hashCode(): Int {
         var result = username.hashCode()
-        result = 31 * result + pw.hashCode()
+        result = 31 * result + password.hashCode()
         result = 31 * result + enabled.hashCode()
         result = 31 * result + grantedAuthorities.hashCode()
         return result

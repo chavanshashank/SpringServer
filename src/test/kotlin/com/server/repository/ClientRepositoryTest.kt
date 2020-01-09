@@ -34,7 +34,7 @@ class ClientRepositoryTest {
     @Test
     fun testStoreLoad() {
 
-        val client = Client("secret", scopes = listOf("app"), redirectUris = listOf("https://example.com"))
+        val client = Client("secret", scopes = listOf("app"), redirectUris = listOf("https://example.com", "http://localhost:4200"))
         assertNotNull(clientRepository.save(client).id)
         assertEquals(1, clientRepository.count())
 

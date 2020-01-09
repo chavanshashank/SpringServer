@@ -71,7 +71,7 @@ class OAuthTest : BaseResourceTest() {
         val client = Client(passwordEncoder.encode(clientSecret),
                 scopes = listOf("app"),
                 grantTypes = listOf("password", "refresh_token", "client_credentials", "authorization_code"),
-                redirectUris = listOf(redirectUri))
+                redirectUris = listOf(redirectUri, "http://localhost:4200"))
         client.id = clientId
         assertNotNull(clientRepository.save(client))
         assertEquals(1, clientRepository.count())
