@@ -57,7 +57,15 @@ class MongoTokenStore : TokenStore {
         } else {
             null
         }
+
+        val existingToken = accessTokenDb.findByToken(token.value)
         val oAuth2AccessToken = MongoAccessToken(token.value, AuthenticationSerializer.serialize(authentication), username, clientId, token.expiration, refreshToken.value, refreshTokenExpiration, authId, token.tokenType, token.scope, token.additionalInformation)
+
+        if (existingToken != null) {
+            // overwrite the existing token with updated data (if there is one)
+            oAuth2AccessToken.id = existingToken.id
+        }
+
         accessTokenDb.save(oAuth2AccessToken)
     }
 
