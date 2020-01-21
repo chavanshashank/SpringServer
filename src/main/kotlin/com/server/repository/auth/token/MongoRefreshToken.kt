@@ -1,11 +1,12 @@
 package com.server.repository.auth.token
 
+import com.server.util.toDate
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken
 import org.springframework.security.oauth2.common.DefaultOAuth2RefreshToken
 import org.springframework.security.oauth2.common.OAuth2RefreshToken
-import java.util.*
+import java.time.LocalDateTime
 
-class MongoRefreshToken(value: String, auth: String?, username: String?, clientId: String?, expiration: Date?) :
+class MongoRefreshToken(value: String, auth: String?, username: String?, clientId: String?, expiration: LocalDateTime?) :
         MongoBaseToken(value, auth, username, clientId, expiration) {
 
     /**
@@ -16,7 +17,7 @@ class MongoRefreshToken(value: String, auth: String?, username: String?, clientI
             return if (expiration == null) {
                 DefaultOAuth2RefreshToken(value)
             } else {
-                DefaultExpiringOAuth2RefreshToken(value, expiration)
+                DefaultExpiringOAuth2RefreshToken(value, expiration.toDate())
             }
         }
 }

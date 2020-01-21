@@ -1,12 +1,15 @@
 package com.server.repository.token
 
 import com.server.repository.auth.token.AccessTokenRepository
+import com.server.util.toDate
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken
+import java.time.LocalDateTime
 
 class AccessTokenRepositoryTest : BaseTokenRepositoryTest() {
 
@@ -40,7 +43,8 @@ class AccessTokenRepositoryTest : BaseTokenRepositoryTest() {
         assertEquals("authId", token.authenticationId)
         assertEquals(username, token.username)
         assertEquals(clientId, token.clientId)
-        assertEquals(token.expiration, loaded?.expiration)
+        assertNotNull(token.expiration)
+        assertEquals(token.expiration?.toDate(), loaded?.expiration?.toDate())
         assertNotNull(token.authentication)
         assertNotNull(token.oAuth2AccessToken)
         assertTrue(token.oAuth2AccessToken.refreshToken is ExpiringOAuth2RefreshToken)
@@ -69,6 +73,23 @@ class AccessTokenRepositoryTest : BaseTokenRepositoryTest() {
         assertEquals(1, accessTokenRepository.count())
 
         accessTokenRepository.deleteByRefreshToken(t2.refreshToken)
+        assertEquals(0, accessTokenRepository.count())
+
+        val expired = createAccessToken("at1", "rt1", LocalDateTime.now().minusMinutes(1))
+        assertNotNull(accessTokenRepository.save(expired).id)
+        assertEquals(1, accessTokenRepository.count())
+
+        val nonExpired = createAccessToken("at2", "rt1", LocalDateTime.now().plusMinutes(1))
+        assertNotNull(accessTokenRepository.save(nonExpired).id)
+        assertEquals(2, accessTokenRepository.count())
+
+        accessTokenRepository.deleteExpiredByRefreshToken("rt1")
+        assertEquals(1, accessTokenRepository.count())
+
+        assertNotNull(accessTokenRepository.findByIdOrNull(nonExpired.id))
+        assertNull(accessTokenRepository.findByIdOrNull(expired.id))
+
+        accessTokenRepository.delete(nonExpired)
         assertEquals(0, accessTokenRepository.count())
     }
 }

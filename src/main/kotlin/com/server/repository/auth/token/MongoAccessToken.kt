@@ -1,18 +1,19 @@
 package com.server.repository.auth.token
 
+import com.server.util.toDate
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken
 import org.springframework.security.oauth2.common.DefaultOAuth2RefreshToken
 import org.springframework.security.oauth2.common.OAuth2AccessToken
-import java.util.*
+import java.time.LocalDateTime
 
 class MongoAccessToken(value: String,
                        auth: String?,
                        username: String?,
                        clientId: String?,
-                       expiration: Date?,
+                       expiration: LocalDateTime?,
                        val refreshToken: String?,
-                       private val refreshTokenExpiration: Date?,
+                       private val refreshTokenExpiration: LocalDateTime?,
                        val authenticationId: String?,
                        private val type: String?,
                        private val scopes: MutableSet<String>?,
@@ -25,7 +26,7 @@ class MongoAccessToken(value: String,
     val oAuth2AccessToken: OAuth2AccessToken
         get() {
             val accessToken = DefaultOAuth2AccessToken(value)
-            accessToken.expiration = expiration
+            accessToken.expiration = expiration?.toDate()
             accessToken.tokenType = type
             accessToken.additionalInformation = additionalInfo ?: mapOf() // must not be null
             accessToken.scope = scopes
@@ -34,7 +35,7 @@ class MongoAccessToken(value: String,
                 if (refreshTokenExpiration == null) {
                     accessToken.refreshToken = DefaultOAuth2RefreshToken(refreshToken)
                 } else {
-                    accessToken.refreshToken = DefaultExpiringOAuth2RefreshToken(refreshToken, refreshTokenExpiration)
+                    accessToken.refreshToken = DefaultExpiringOAuth2RefreshToken(refreshToken, refreshTokenExpiration.toDate())
                 }
             }
             return accessToken

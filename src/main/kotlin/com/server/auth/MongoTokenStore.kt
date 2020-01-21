@@ -5,6 +5,7 @@ import com.server.repository.auth.token.AccessTokenRepository
 import com.server.repository.auth.token.MongoAccessToken
 import com.server.repository.auth.token.MongoRefreshToken
 import com.server.repository.auth.token.RefreshTokenRepository
+import com.server.util.toLocalDateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken
 import org.springframework.security.oauth2.common.OAuth2AccessToken
@@ -53,13 +54,13 @@ class MongoTokenStore : TokenStore {
 
         val refreshToken = token.refreshToken
         val refreshTokenExpiration = if (refreshToken is ExpiringOAuth2RefreshToken) {
-            refreshToken.expiration
+            refreshToken.expiration?.toLocalDateTime()
         } else {
             null
         }
 
         val existingToken = accessTokenDb.findByToken(token.value)
-        val oAuth2AccessToken = MongoAccessToken(token.value, AuthenticationSerializer.serialize(authentication), username, clientId, token.expiration, refreshToken.value, refreshTokenExpiration, authId, token.tokenType, token.scope, token.additionalInformation)
+        val oAuth2AccessToken = MongoAccessToken(token.value, AuthenticationSerializer.serialize(authentication), username, clientId, token.expiration?.toLocalDateTime(), refreshToken.value, refreshTokenExpiration, authId, token.tokenType, token.scope, token.additionalInformation)
 
         if (existingToken != null) {
             // overwrite the existing token with updated data (if there is one)
@@ -78,14 +79,15 @@ class MongoTokenStore : TokenStore {
     }
 
     override fun removeAccessTokenUsingRefreshToken(refreshToken: OAuth2RefreshToken) {
-        accessTokenDb.deleteByRefreshToken(refreshToken.value)
+        // only remove expired here (this avoids deletion of non-expired tokens e.g. for users with multiple devices but same account and same refresh token)
+        accessTokenDb.deleteExpiredByRefreshToken(refreshToken.value)
     }
 
     override fun storeRefreshToken(refreshToken: OAuth2RefreshToken, authentication: OAuth2Authentication) {
         val username = if (authentication.isClientOnly) null else authentication.name
         val clientId = if (authentication.oAuth2Request == null) null else authentication.oAuth2Request.clientId
 
-        val oAuth2RefreshToken = MongoRefreshToken(refreshToken.value, AuthenticationSerializer.serialize(authentication), username, clientId, (refreshToken as? ExpiringOAuth2RefreshToken)?.expiration)
+        val oAuth2RefreshToken = MongoRefreshToken(refreshToken.value, AuthenticationSerializer.serialize(authentication), username, clientId, (refreshToken as? ExpiringOAuth2RefreshToken)?.expiration?.toLocalDateTime())
         refreshTokenDb.save(oAuth2RefreshToken)
     }
 

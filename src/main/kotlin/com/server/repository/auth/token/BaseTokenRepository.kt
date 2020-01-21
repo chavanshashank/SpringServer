@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.isEqualTo
+import java.time.LocalDateTime
 
 interface BaseTokenRepository<T : MongoBaseToken> {
     /**
@@ -55,6 +56,12 @@ interface CustomAccessTokenRepository : BaseTokenRepository<MongoAccessToken> {
      * @param refreshToken: The refresh token value to search for.
      */
     fun deleteByRefreshToken(refreshToken: String?)
+
+    /**
+     * Removes all expired tokens with the provided refresh token value.
+     * @param refreshToken: The refresh token value to search for.
+     */
+    fun deleteExpiredByRefreshToken(refreshToken: String?)
 }
 
 abstract class BaseTokenRepositoryImpl<T : MongoBaseToken>(protected val clazz: Class<T>) : AbstractMongoEventListener<T>(), BaseTokenRepository<T> {
@@ -146,6 +153,13 @@ class AccessTokenRepositoryImpl : BaseTokenRepositoryImpl<MongoAccessToken>(Mong
     override fun deleteByRefreshToken(refreshToken: String?) {
         val q = Query()
         q.addCriteria(Criteria.where(refreshTokenKey).isEqualTo(crypto.encrypt(refreshToken)))
+        mongoTemplate.remove(q, clazz)
+    }
+
+    override fun deleteExpiredByRefreshToken(refreshToken: String?) {
+        val q = Query()
+        val now = LocalDateTime.now()
+        q.addCriteria(Criteria.where(refreshTokenKey).isEqualTo(crypto.encrypt(refreshToken)).and("expiration").lte(now))
         mongoTemplate.remove(q, clazz)
     }
 }

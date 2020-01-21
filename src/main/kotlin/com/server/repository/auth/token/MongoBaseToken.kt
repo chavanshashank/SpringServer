@@ -3,7 +3,7 @@ package com.server.repository.auth.token
 import com.server.repository.MongoObject
 import com.server.repository.auth.AuthenticationSerializer
 import org.springframework.security.oauth2.provider.OAuth2Authentication
-import java.util.*
+import java.time.LocalDateTime
 
 /**
  * Base class of all tokens stored in the database.
@@ -16,7 +16,7 @@ abstract class MongoBaseToken(
         val username: String?,
         val clientId: String?,
         /** The date the token expires */
-        val expiration: Date?) : MongoObject() {
+        val expiration: LocalDateTime?) : MongoObject() {
 
     /**
      * @return the de-serialized Authentication object
